@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,9 +30,14 @@ class _AiFormState extends ConsumerState<AiForm> {
   final TextEditingController _aiController = TextEditingController();
   bool _isLoading = false;
   final List<TransactionModel> _recentTransactions = [];
+  
+  Stopwatch? _stopwatch;
+  Timer? _timer;
+  String? _lastProcessingDuration;
 
   @override
   void dispose() {
+    _timer?.cancel();
     _aiController.dispose();
     super.dispose();
   }
@@ -41,7 +47,15 @@ class _AiFormState extends ConsumerState<AiForm> {
     List<CategoryModel> categories,
     List<WalletModel> wallets,
   ) async {
-    setState(() => _isLoading = true);
+    _stopwatch = Stopwatch()..start();
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      if (mounted) setState(() {});
+    });
+    setState(() {
+      _isLoading = true;
+      _lastProcessingDuration = null;
+    });
+    
     try {
       final aiService = ref.read(aiServiceProvider);
       final results = await aiService.parseTransaction(
@@ -144,6 +158,10 @@ class _AiFormState extends ConsumerState<AiForm> {
         }
 
         _aiController.clear();
+        _timer?.cancel();
+        _stopwatch?.stop();
+        _lastProcessingDuration = (((_stopwatch?.elapsedMilliseconds ?? 0) / 1000)).toStringAsFixed(1);
+        final seconds = _lastProcessingDuration;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Saved ${newTransactions.length} transactions!'),
@@ -152,11 +170,16 @@ class _AiFormState extends ConsumerState<AiForm> {
       }
     } catch (e) {
       if (mounted) {
+        _timer?.cancel();
+        _stopwatch?.stop();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('AI Error: $e')));
       }
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _timer?.cancel();
+        });
       }
     }
   }
@@ -171,7 +194,20 @@ class _AiFormState extends ConsumerState<AiForm> {
     final userAsync = ref.watch(currentUserProvider);
 
     return _isLoading
-        ? const Center(child: CircularProgressIndicator())
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                if (_stopwatch != null)
+                  Text(
+                    'Processing... ${(_stopwatch!.elapsedMilliseconds / 1000).toStringAsFixed(1)}s',
+                    style: theme.textTheme.bodyLarge,
+                  ),
+              ],
+            ),
+          )
         : SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Column(
@@ -370,6 +406,18 @@ class _AiFormState extends ConsumerState<AiForm> {
                       ],
                     ),
                   ),
+                  if (_lastProcessingDuration != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        'Last processed in $_lastProcessingDuration seconds',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
                 ],
                 TextField(
                   controller: _aiController,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:transaction_note/components/navigation/app_bottom_nav_bar.dart';
 import 'package:transaction_note/screens/home_screen.dart';
 import 'package:transaction_note/screens/profile_screen.dart';
-import 'package:transaction_note/screens/transaction_list_screen.dart';
+import 'package:transaction_note/screens/budget_management_screen.dart';
 import 'package:transaction_note/screens/transaction_form_screen.dart';
 import 'package:transaction_note/screens/report_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,8 +69,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             // Index 0: Home Screen Layout
             const HomeScreen(),
             
-            // Index 1: Transaction Tab
-            const TransactionListScreen(),
+            // Index 1: Budget Management Tab
+            const BudgetManagementScreen(),
             
             // Index 2: Add Tab
             const TransactionFormScreen(isEmbedded: true),

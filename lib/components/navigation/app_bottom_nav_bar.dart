@@ -24,8 +24,8 @@ class AppBottomNavBar extends ConsumerWidget {
       items: <BottomNavigationBarItem>[
         const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         const BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long),
-          label: 'Transaction',
+          icon: Icon(Icons.account_balance_wallet),
+          label: 'Budget',
         ),
         const BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add'),
         const BottomNavigationBarItem(

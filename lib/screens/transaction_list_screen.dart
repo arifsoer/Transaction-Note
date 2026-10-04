@@ -10,6 +10,7 @@ import 'package:transaction_note/providers/user_provider.dart';
 import 'package:transaction_note/helper/period_helper.dart';
 import 'package:transaction_note/helper/csv_helper.dart';
 import 'package:transaction_note/models/transaction.dart';
+import 'package:go_router/go_router.dart';
 
 class TransactionListScreen extends ConsumerStatefulWidget {
   const TransactionListScreen({super.key});
@@ -91,10 +92,14 @@ class _TransactionListScreenState extends ConsumerState<TransactionListScreen> {
                 ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => context.pop(),
+              ),
               IconButton(
                 icon: const Icon(Icons.chevron_left, color: Colors.white),
                 onPressed: () {

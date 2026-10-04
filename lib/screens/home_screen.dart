@@ -4,6 +4,7 @@ import 'package:transaction_note/components/screens/home_screen/home_header.dart
 import 'package:transaction_note/components/screens/home_screen/transaction_list.dart';
 import 'package:transaction_note/theme/app_theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -54,14 +55,23 @@ class HomeScreen extends StatelessWidget {
                 return Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                      child: Text(
-                        'Showing transactions for today and yesterday. For a detailed list, go to the Transactions tab.',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          fontStyle: FontStyle.italic,
-                        ),
-                        textAlign: TextAlign.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Showing transactions for today and yesterday.',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => context.push('/transactions/list'),
+                            child: const Text('View All'),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(

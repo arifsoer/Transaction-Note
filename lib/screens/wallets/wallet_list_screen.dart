@@ -11,6 +11,7 @@ class WalletListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final walletsAsync = ref.watch(walletsStreamProvider);
     final defaultWalletId = ref.watch(defaultWalletIdProvider);
+    final homeFilterWalletIds = ref.watch(homeFilterWalletIdsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,23 +50,50 @@ class WalletListScreen extends ConsumerWidget {
                       if (wallet.id == defaultWalletId) ...[
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.amber.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.amber, width: 1),
                           ),
-                          child: Text(
-                            'Default',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.star, size: 12, color: Colors.amber),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Default',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ],
                   ),
+                  subtitle: homeFilterWalletIds.contains(wallet.id)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.home, size: 14, color: Theme.of(context).colorScheme.primary),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Shown on home screen',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : null,
                   trailing: IconButton(
                     icon: const Icon(Icons.edit, size: 20),
                     onPressed: () {

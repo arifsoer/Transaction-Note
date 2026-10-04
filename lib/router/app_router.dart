@@ -16,6 +16,7 @@ import '../screens/transaction_form_screen.dart';
 import '../models/transaction.dart';
 import '../screens/category_transactions_screen.dart';
 import '../screens/wallet_transactions_screen.dart';
+import '../screens/transaction_list_screen.dart' as transaction_list;
 
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<dynamic> _subscription;
@@ -99,6 +100,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           final periodRange = extra['periodRange'] as DateTimeRange;
           return WalletTransactionsScreen(walletName: walletName, periodRange: periodRange);
         },
+      ),
+      GoRoute(
+        name: 'TransactionListScreen',
+        path: '/transactions/list',
+        builder: (context, state) => const Scaffold(
+          body: SafeArea(
+            child: transaction_list.TransactionListScreen(),
+          ),
+        ),
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {

@@ -197,6 +197,7 @@ class HomeHeader extends ConsumerWidget {
                     );
                     final activeFilter = ref.watch(activeHomeFilterProvider);
                     final walletsAsync = ref.watch(walletsStreamProvider);
+                    final defaultWalletId = ref.watch(defaultWalletIdProvider);
 
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -228,7 +229,16 @@ class HomeHeader extends ConsumerWidget {
                                   return Padding(
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: FilterChip(
-                                      label: Text(wallet.name),
+                                      label: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(wallet.name),
+                                          if (wallet.id == defaultWalletId) ...[
+                                            const SizedBox(width: 4),
+                                            const Icon(Icons.star, size: 14, color: Colors.amber),
+                                          ],
+                                        ],
+                                      ),
                                       selected: activeFilter == id,
                                       onSelected: (_) {
                                         ref
